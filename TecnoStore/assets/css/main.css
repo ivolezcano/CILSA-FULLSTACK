@@ -1,0 +1,9 @@
+#navbar{
+    margin: 0 200px;
+}
+
+@media (max-width: 992px) {
+    #navbar {
+        margin: 0 0;
+    }
+}
