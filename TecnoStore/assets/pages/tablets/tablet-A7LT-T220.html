@@ -20,9 +20,12 @@
       crossorigin="anonymous"
     ></script>
     <script src="../../js/main.js"></script>
-    <script src="../../js/tablets.js"></script>
+    <script src="../../js/productos.js"></script>
+    <script src="../../js/dibujarPantallaDescripcion.js"></script>
     <script>
-      window.onload = dibujarPantalla(tablets[0]);
+      window.onload = dibujarPantalla(
+        productos.find((producto) => producto.codigo === "A7LT-T220")
+      );
     </script>
   </body>
 </html>
