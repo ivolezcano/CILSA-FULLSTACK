@@ -7,3 +7,57 @@
         margin: 0 0;
     }
 }
+
+.mr-dafoe-regular {
+    font-family: "Mr Dafoe", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.image-container{
+    position: relative;
+    display: inline-block;
+}
+
+.banner{
+    display: block;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+} 
+
+.gradient-overlay{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to bottom, transparent, white);
+    border-radius: 0 0 15px 15px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.carousel {
+    position: absolute;
+    top: 100%; /* Ajusta para superponer el carrusel sobre la imagen */
+    left: 50%;
+    transform: translate(-50%, -25%);
+    z-index: 2;
+    width: 100%; /* Hacer el carrusel a ancho completo */
+    max-width: 1200px; /* Limitar el ancho máximo del carrusel */
+  }
+  
+  /* Asegura que las tarjetas mantengan un tamaño adecuado en pantallas más pequeñas */
+  .carousel-item .card {
+    margin: 15px 0; /* Espaciado entre las tarjetas */
+  }
+  
+  @media (max-width: 768px) {
+    .carousel {
+      top: 80%; /* Ajusta la posición para pantallas pequeñas */
+    }
+  
+    .carousel-item .card {
+      margin: 10px 0; /* Menos margen para pantallas pequeñas */
+    }
+  }
