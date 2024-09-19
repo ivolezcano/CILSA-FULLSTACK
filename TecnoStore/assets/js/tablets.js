@@ -4,6 +4,7 @@ const tablets = [
     marca: "Samsung",
     codigo: "A7LT-T220",
     precio: 349999,
+    destacado: true,
     imagenes: [
       "https://images.fravega.com/f300/b6deeaf6779e30c00576f690ca8cb9db.jpg.webp",
       "https://images.fravega.com/f300/374e95a50581b8dc78b2c0cfa1931240.jpg.webp",
@@ -17,6 +18,7 @@ const tablets = [
     marca: "Acer",
     codigo: "M10-11-K01Z",
     precio: 274999,
+    destacado: false,
     imagenes: [
       "https://images.fravega.com/f300/40a4abb86396d962c04c4a90fb82c33b.jpg.webp",
       "https://images.fravega.com/f300/3a833222db8eb6efa74ef76ddd171f00.jpg.webp",
@@ -30,6 +32,7 @@ const tablets = [
     marca: "Lenovo",
     codigo: "Yoga-Tab",
     precio: 799999,
+    destacado: true,
     imagenes: [
       "https://images.fravega.com/f300/2fe6f8cae76e791b8d409fda3c254566.png.webp",
       "https://m.media-amazon.com/images/I/51V+sOeGZQL._AC_SX679_.jpg",
