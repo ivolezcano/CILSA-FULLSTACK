@@ -63,7 +63,7 @@ const dibujarPantalla = (dispositivo) => {
               </p>
             </div>
 
-            <h3 class="card-title">$${dispositivo.precio}</h3>
+            <h3 class="card-title text-success">$${dispositivo.precio}</h3>
             <div>
               <h4>Descripcion</h4>
               <p class="card-text">
@@ -102,7 +102,7 @@ const dibujarPantalla = (dispositivo) => {
           <div class="card-body">
             <h5 class="card-title
             ">${relacionado.nombre}</h5>
-            <p class="card-text">$${relacionado.precio}</p>
+            <p class="card-text text-success">$${relacionado.precio}</p>
           </div>
         </a>`;
     row.appendChild(col);
