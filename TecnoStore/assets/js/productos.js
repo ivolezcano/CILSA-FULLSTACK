@@ -99,4 +99,90 @@ const productos = [
       "La notebook Acer Aspire 3 cuenta con una pantalla de 15.6 pulgadas con resolución FHD. Está equipada con un procesador AMD Ryzen 5, capaz de manejar tareas multitarea, navegación web, reproducción de videos, y más, con gran fluidez. La Acer Aspire 3 posee una batería de 40 Wh, capaz de ofrecer hasta 11 horas de uso continuo. Viene con un almacenamiento SSD de 256GB que garantiza tiempos de carga rápidos y cuenta con 8GB de memoria SDRAM, lo que permite una multitarea fluida y un rendimiento ágil.",
     ruta: "/TecnoStore/assets/pages/notebooks/notebook-A315-24P-R4JA.html",
   },
+  {
+    nombre: "Smartphone Samsung Galaxy S23 Ultra 512GB 12GB Phantom Black",
+    categoria: "Smartphone",
+    marca: "Samsung",
+    codigo: "S23U-512GB",
+    precio: 4899999,
+    destacado: false,
+    imagenes: [
+      "https://http2.mlstatic.com/D_NQ_NP_730886-MLU79072303759_092024-O.webp",
+      "https://http2.mlstatic.com/D_NQ_NP_980971-MLU76369468128_052024-O.webp",
+      "https://http2.mlstatic.com/D_NQ_NP_770365-MLU76369586574_052024-O.webp",
+    ],
+    descripcion:
+      "El Samsung Galaxy S23 Ultra cuenta con pantalla Dynamic AMOLED 2X de 6,8 pulgadas con resolución QHD+ y frecuencia de actualización de 120 Hz. Procesador Snapdragon 8 Gen 2, almacenamiento de 512GB, 12GB de RAM y cámara principal de 200 MP. Batería de 5000 mAh y sistema operativo Android 13. Además, cuenta con un S-Pen integrado.",
+    ruta: "/TecnoStore/assets/pages/smartphones/smartphone-S23U-512GB.html",
+  },
+  {
+    nombre: "Smartphone Apple iPhone 15 Pro Max 256GB Titanio Negro",
+    categoria: "Smartphone",
+    marca: "Apple",
+    codigo: "iPhone15PM-256GB",
+    precio: 7999999,
+    destacado: true,
+    imagenes: [
+      "https://http2.mlstatic.com/D_NQ_NP_768125-MLA71783090116_092023-O.webp",
+      "https://http2.mlstatic.com/D_NQ_NP_656811-MLA74808089011_022024-O.webp",
+      "https://http2.mlstatic.com/D_NQ_NP_998337-MLA74805955085_022024-O.webp",
+    ],
+    descripcion:
+      "El Apple iPhone 15 Pro Max cuenta con una pantalla Super Retina XDR OLED de 6,7 pulgadas, procesador A17 Pro, 256GB de almacenamiento, 8GB de RAM y cámara principal de 48 MP. Batería de larga duración con capacidad de 4852 mAh y sistema operativo iOS 17. Construido en titanio, más resistente y ligero.",
+    ruta: "/TecnoStore/assets/pages/smartphones/smartphone-iPhone15PM-256GB.html",
+  },
+  {
+    nombre: "Smartphone Google Pixel 8 Pro 128GB 12GB Snow",
+    categoria: "Smartphone",
+    marca: "Google",
+    codigo: "Pixel8P-128GB",
+    precio: 3299999,
+    destacado: false,
+    imagenes: [
+      "https://http2.mlstatic.com/D_NQ_NP_758351-MLA77920876754_082024-O.webp",
+      "https://http2.mlstatic.com/D_NQ_NP_998992-MLA76806970306_062024-O.webp",
+      "https://http2.mlstatic.com/D_NQ_NP_795916-MLA76807235352_062024-O.webp",
+    ],
+    descripcion:
+      "El Google Pixel 8 Pro cuenta con pantalla LTPO OLED de 6,7 pulgadas con resolución QHD+ y tasa de refresco adaptativa de 120 Hz. Procesador Tensor G3, 128GB de almacenamiento, 12GB de RAM y cámara principal de 50 MP. Batería de 5050 mAh y sistema operativo Android 14. Resistente al agua y al polvo con certificación IP68.",
+    ruta: "/TecnoStore/assets/pages/smartphones/smartphone-Pixel8P-128GB.html",
+  },
 ];
+
+// Funcion que renderiza el listado de productos en productos.html
+const container = document.querySelector('.productos-container');
+
+function mostrarProductos(productos) {
+  container.innerHTML = ''; // Limpia el contenido previo
+  productos.forEach(producto => {
+    const card = document.createElement('div');
+    card.classList.add('producto-card');
+
+    card.innerHTML = `
+      <a href="${producto.ruta}" class="card-link">
+        <img src="${producto.imagenes[0]}" alt="${producto.nombre}">
+        <div class="producto-info">
+          <h3>${producto.nombre}</h3>
+          <p class="precio">$${producto.precio.toLocaleString()}</p>
+        </div>
+      </a>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function filtrarProductos(categoria) {
+  if (categoria === 'Mostrar todo') {
+    mostrarProductos(productos);
+  } else {
+    const productosFiltrados = productos.filter(producto => producto.categoria === categoria);
+    mostrarProductos(productosFiltrados);
+  }
+}
+
+// Mostrar todos los productos al cargar la página
+mostrarProductos(productos);
+
+
+

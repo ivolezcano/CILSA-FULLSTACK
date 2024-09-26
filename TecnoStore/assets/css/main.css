@@ -8,6 +8,31 @@
     }
 }
 
+.no-style-link {
+  text-decoration: none; 
+  color: inherit; 
+}
+
+.destacado {
+  font-size: 1.5rem; 
+  color: white; 
+  background-color: #ff4500;
+  padding: 10px; 
+  text-align: center; 
+  border-radius: 5px; 
+  margin: 20px 0; 
+}
+
+.mas-visto {
+  font-size: 1.5rem; 
+  color: white; 
+  background-color: #009dff;
+  padding: 10px; 
+  text-align: center; 
+  border-radius: 5px; 
+  margin: 20px 0; 
+}
+
 .mr-dafoe-regular {
     font-family: "Mr Dafoe", cursive;
     font-weight: 400;
@@ -36,15 +61,11 @@
     pointer-events: none;
     z-index: 1;
 }
-
-.carousel {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translate(-50%, -25%);
-    z-index: 2;
-    width: 100%; 
-    max-width: 1200px; 
+/* Carousel */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: black;
+    border-radius: 50%;
 }
 
 /* FOOTER */
@@ -53,13 +74,7 @@ footer {
   position: relative; 
   background-color: #343a40;
   z-index: 1; 
-  padding-top: 50px;
   padding-bottom: 50px;
-}
-
-
-.footer-spacing {
-  margin-top: 400px; 
 }
 
 footer a {
