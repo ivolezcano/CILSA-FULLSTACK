@@ -6,6 +6,7 @@ const productos = [
     codigo: "A7LT-T220",
     precio: 349999,
     destacado: true,
+    masVisto: false,
     imagenes: [
       "https://images.fravega.com/f300/b6deeaf6779e30c00576f690ca8cb9db.jpg.webp",
       "https://images.fravega.com/f300/374e95a50581b8dc78b2c0cfa1931240.jpg.webp",
@@ -22,6 +23,7 @@ const productos = [
     codigo: "M10-11-K01Z",
     precio: 274999,
     destacado: false,
+    masVisto: true,
     imagenes: [
       "https://images.fravega.com/f300/40a4abb86396d962c04c4a90fb82c33b.jpg.webp",
       "https://images.fravega.com/f300/3a833222db8eb6efa74ef76ddd171f00.jpg.webp",
@@ -37,7 +39,8 @@ const productos = [
     marca: "Lenovo",
     codigo: "Yoga-Tab",
     precio: 799999,
-    destacado: true,
+    destacado: false,
+    masVisto: false,
     imagenes: [
       "https://images.fravega.com/f300/2fe6f8cae76e791b8d409fda3c254566.png.webp",
       "https://m.media-amazon.com/images/I/51V+sOeGZQL._AC_SX679_.jpg",
@@ -55,6 +58,7 @@ const productos = [
     codigo: "NP750XFG-KB2A",
     precio: 1299999,
     destacado: true,
+    masVisto: false,
     imagenes: [
       "https://images.fravega.com/f300/6a74c2c706cd166957e58b33d6c1e311.png.webp",
       "https://images.fravega.com/f300/e232c362963ee10936f5355e30aac34e.png.webp",
@@ -71,7 +75,8 @@ const productos = [
     marca: "HP",
     codigo: "14-EP1002LA",
     precio: 1399999,
-    destacado: true,
+    destacado: false,
+    masVisto: false,
     imagenes: [
       "https://images.fravega.com/f300/e4ba035aec6e4ac51263711ec7e7c13f.jpg.webp",
       "https://images.fravega.com/f300/c3c0966af7318d899dd8871b0c814f51.jpg.webp",
@@ -89,6 +94,7 @@ const productos = [
     codigo: "A315-24P-R4JA",
     precio: 999999,
     destacado: false,
+    masVisto: true,
     imagenes: [
       "https://images.fravega.com/f300/40a0dac3acabb2f5cfa724ba669cbe7d.jpg.webp",
       "https://images.fravega.com/f300/f922626c8f0c3b2bbfbcf77eb29c1811.jpg.webp",
@@ -106,6 +112,7 @@ const productos = [
     codigo: "S23U-512GB",
     precio: 4899999,
     destacado: false,
+    masVisto: false,
     imagenes: [
       "https://http2.mlstatic.com/D_NQ_NP_730886-MLU79072303759_092024-O.webp",
       "https://http2.mlstatic.com/D_NQ_NP_980971-MLU76369468128_052024-O.webp",
@@ -122,6 +129,7 @@ const productos = [
     codigo: "iPhone15PM-256GB",
     precio: 7999999,
     destacado: true,
+    masVisto: false,
     imagenes: [
       "https://http2.mlstatic.com/D_NQ_NP_768125-MLA71783090116_092023-O.webp",
       "https://http2.mlstatic.com/D_NQ_NP_656811-MLA74808089011_022024-O.webp",
@@ -138,6 +146,7 @@ const productos = [
     codigo: "Pixel8P-128GB",
     precio: 3299999,
     destacado: false,
+    masVisto: true,
     imagenes: [
       "https://http2.mlstatic.com/D_NQ_NP_758351-MLA77920876754_082024-O.webp",
       "https://http2.mlstatic.com/D_NQ_NP_998992-MLA76806970306_062024-O.webp",
@@ -150,13 +159,13 @@ const productos = [
 ];
 
 // Funcion que renderiza el listado de productos en productos.html
-const container = document.querySelector('.productos-container');
+const container = document.querySelector(".productos-container");
 
 function mostrarProductos(productos) {
-  container.innerHTML = ''; // Limpia el contenido previo
-  productos.forEach(producto => {
-    const card = document.createElement('div');
-    card.classList.add('producto-card');
+  container.innerHTML = ""; // Limpia el contenido previo
+  productos.forEach((producto) => {
+    const card = document.createElement("div");
+    card.classList.add("producto-card");
 
     card.innerHTML = `
       <a href="${producto.ruta}" class="card-link">
@@ -173,16 +182,15 @@ function mostrarProductos(productos) {
 }
 
 function filtrarProductos(categoria) {
-  if (categoria === 'Mostrar todo') {
+  if (categoria === "Mostrar todo") {
     mostrarProductos(productos);
   } else {
-    const productosFiltrados = productos.filter(producto => producto.categoria === categoria);
+    const productosFiltrados = productos.filter(
+      (producto) => producto.categoria === categoria
+    );
     mostrarProductos(productosFiltrados);
   }
 }
 
 // Mostrar todos los productos al cargar la página
 mostrarProductos(productos);
-
-
-
