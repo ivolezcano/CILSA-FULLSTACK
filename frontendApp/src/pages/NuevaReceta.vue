@@ -135,6 +135,7 @@ const crearReceta = () => {
       message: "La receta debe tener al menos un ingrediente",
     });
   } else if (
+    // chequea si ya existe la receta (cambiar de localStorage a petición a la API)
     $q.localStorage
       .getAllKeys()
       .map(function (elemento) {
@@ -153,6 +154,7 @@ const crearReceta = () => {
       descripcion: descripcion.value,
     };
     try {
+      // guardar receta (cambiar de localStorage a petición a la API)
       $q.localStorage.set(recetaName.value, JSON.stringify(receta.value));
       descripcion.value = "";
       recetaName.value = null;

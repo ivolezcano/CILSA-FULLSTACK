@@ -251,6 +251,7 @@ const ingrediente = ref(null);
 const edit_descripcion = ref();
 const editar = ref(false);
 
+// obtener todas las recetas guardadas (Cambiar de localStorage a peticion a la API)
 const keys = ref($q.localStorage.getAllKeys());
 
 const ordenar = () => {
@@ -268,6 +269,7 @@ const estaOrdenadoAlfabeticamente = (array) => {
   return true;
 };
 
+// obtener receta seleccionada para mostrarla (Cambiar de localStorage a peticion a la API)
 const obtenerReceta = (key) => {
   $receta.value = JSON.parse($q.localStorage.getItem(key));
   opciones.value = [];
@@ -277,6 +279,7 @@ const obtenerReceta = (key) => {
   edit_descripcion.value = $receta.value.descripcion;
 };
 
+// eliminar receta seleccionada (Cambiar de localStorage a peticion a la API)
 const eliminarReceta = (key) => {
   $q.dialog({
     title: "Eliminar receta",
@@ -296,6 +299,7 @@ const eliminarReceta = (key) => {
   });
 };
 
+// guardar receta editada (Cambiar de localStorage a peticion a la API)
 const guardarEdit = () => {
   $q.dialog({
     title: "Guardar cambios",

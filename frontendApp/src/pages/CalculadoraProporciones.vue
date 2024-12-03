@@ -76,6 +76,7 @@ proporcion.value.nombreReceta =
   " de " +
   ingrediente;
 
+// guardar proporcion (cambiar de localStorage a petición a la API)
 const guardarProporcion = () => {
   try {
     $q.localStorage.set(
