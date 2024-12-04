@@ -142,6 +142,15 @@ const crearReceta = () => {
         return elemento.toUpperCase();
       })
       .includes(recetaName.value.toUpperCase())
+    /*
+      fetch("http://localhost:3000/recetas/?nombreReceta=" + recetaName.value)
+        .then((response) => response.json())
+        .then((data) => {
+          if(data.nombreReceta === recetaName.value){
+            return true;
+          }
+        })
+      */
   ) {
     $q.notify({
       type: "negative",
@@ -156,6 +165,15 @@ const crearReceta = () => {
     try {
       // guardar receta (cambiar de localStorage a petición a la API)
       $q.localStorage.set(recetaName.value, JSON.stringify(receta.value));
+      /*
+      fetch("http://localhost:3000/recetas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(receta.value),
+      });
+      */
       descripcion.value = "";
       recetaName.value = null;
       ingredientes.value = [];

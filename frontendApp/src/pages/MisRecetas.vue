@@ -253,6 +253,16 @@ const editar = ref(false);
 
 // obtener todas las recetas guardadas (Cambiar de localStorage a peticion a la API)
 const keys = ref($q.localStorage.getAllKeys());
+/*
+// const keys = ref(fetchRecetas());
+
+const fetchRecetas = async () => {
+  const response = await fetch("http://localhost:3000/recetas/nombres")
+    .then((response) => response.json())
+    .then((data) => keys.value = data)
+    .catch((error) => console.error("Error:", error));
+};
+*/
 
 const ordenar = () => {
   estaOrdenadoAlfabeticamente(keys.value)
@@ -272,6 +282,12 @@ const estaOrdenadoAlfabeticamente = (array) => {
 // obtener receta seleccionada para mostrarla (Cambiar de localStorage a peticion a la API)
 const obtenerReceta = (key) => {
   $receta.value = JSON.parse($q.localStorage.getItem(key));
+  /*
+  $receta.value = fetch("http://localhost:3000/recetas/?nombreReceta=" + key)
+    .then((response) => response.json())
+    .then((data) => data)
+    .catch((error) => console.error("Error:", error));
+  */
   opciones.value = [];
   for (let i = 0; i < $receta.value.ingredientes.length; i++) {
     opciones.value.push($receta.value.ingredientes[i].ingrediente);
@@ -288,6 +304,12 @@ const eliminarReceta = (key) => {
     persistent: true,
   }).onOk(() => {
     $q.localStorage.remove(key);
+    // fetch("http://localhost:3000/recetas/?nombreReceta=" + key, {
+    //   method: "DELETE",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // }).then(() => {
     let index = keys.value.indexOf(key);
     if (index !== -1) {
       keys.value.splice(index, 1);
@@ -296,6 +318,7 @@ const eliminarReceta = (key) => {
       message: "Receta eliminada correctamente",
       type: "positive",
     });
+    // }).catch((error) => console.error("Error:", error));
   });
 };
 

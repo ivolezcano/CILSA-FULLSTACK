@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 const RecetaSchema = new mongoose.Schema({
-  nombre: {
+  nombreReceta: {
     type: String,
     required: true,
   },
   ingredientes: {
     type: [
       {
-        nombre: String,
+        ingrediente: String,
         cantidad: Number,
         unidad: String,
       },

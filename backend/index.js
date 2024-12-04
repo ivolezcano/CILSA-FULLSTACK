@@ -44,7 +44,7 @@ async function run() {
 run();
 
 // Configuración de rutas
-app.use("/", recetasRouter);
+app.use("/recetas", recetasRouter);
 
 // Configuración del puerto
 const PORT = process.env.PORT || 3000;
