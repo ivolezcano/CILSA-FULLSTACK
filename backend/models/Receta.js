@@ -18,5 +18,9 @@ const RecetaSchema = new mongoose.Schema({
   descripcion: {
     type: String,
   },
+  realizada: {
+    type: Boolean,
+    default: false,
+  },
 });
 export const Receta = mongoose.model("Receta", RecetaSchema);

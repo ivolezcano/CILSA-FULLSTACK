@@ -62,6 +62,9 @@
               dense
               @click.stop="eliminarReceta(receta)"
             />
+            <q-fab-action push color="primary" round dense>
+              <q-checkbox v-model="isRecipeMade" dense color="primary" />
+            </q-fab-action>
           </q-fab>
         </q-item-section>
       </q-item>
@@ -250,6 +253,7 @@ const cantidad = ref(null);
 const ingrediente = ref(null);
 const edit_descripcion = ref();
 const editar = ref(false);
+const isRecipeMade = ref(false);
 
 // obtener todas las recetas guardadas (Cambiar de localStorage a peticion a la API)
 const keys = ref($q.localStorage.getAllKeys());
