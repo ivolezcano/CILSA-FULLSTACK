@@ -9,9 +9,7 @@
       <br />
       <br />
       - Las proporciones se guardan como una nueva receta con la aclaracion de
-      que son proporciones "(prop.)". Solo se guarda la ultima proporcion
-      realizada, por lo que si se realiza una nueva proporcion de la misma
-      receta y se guarda, se sobreescribira la anterior.
+      que son proporciones.
       <br />
       <br />
       - Todas las recetas podran ser editadas o eliminadas en la sección "Mis
