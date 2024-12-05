@@ -94,6 +94,7 @@
 import TablaDeIngredientes from "src/components/TablaDeIngredientes.vue";
 import { ref } from "vue";
 import { useQuasar } from "quasar";
+import { useRoute, useRouter } from "vue-router";
 
 const $q = useQuasar();
 const ingrediente = ref(null);
@@ -126,6 +127,11 @@ const agregarIngrediente = () => {
     ];
     reset();
   }
+};
+
+const router = useRouter();
+const goToMisRecetas = () => {
+  router.push("/misrecetas");
 };
 
 const crearReceta = () => {
@@ -181,6 +187,7 @@ const crearReceta = () => {
         type: "positive",
         message: "Receta creada exitosamente",
       });
+      goToMisRecetas();
     } catch (error) {
       $q.notify({
         type: "negative",
@@ -189,6 +196,7 @@ const crearReceta = () => {
     }
   }
 };
+
 const reset = () => {
   ingrediente.value = null;
   unidad.value = null;
