@@ -85,6 +85,23 @@ router.patch("/", async (req, res) => {
   }
 });
 
+router.patch("/fav", async (req, res) => {
+  try {
+    const receta = await Receta.findOne({
+      nombreReceta: req.query.nombreReceta,
+    });
+    if (receta) {
+      receta.favorita = !receta.favorita;
+      await receta.save();
+      res.status(200).json(receta);
+    } else {
+      res.status(404).json({ message: "Receta no encontrada" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.put("/", (req, res) => {
   res.send("Request PUT");
 });

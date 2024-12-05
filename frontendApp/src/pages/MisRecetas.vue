@@ -1,26 +1,72 @@
 <template>
   <q-page padding class="bg-secondary column">
+    <q-btn
+      v-if="keys.length > 1"
+      flat
+      round
+      color="primary"
+      icon="sort_by_alpha"
+      size="15px"
+      class="absolute-top-left q-mt-lg q-ml-md"
+      @click="ordenar()"
+    />
+    <q-btn-dropdown
+      flat
+      round
+      color="primary"
+      icon="filter_list"
+      size="15px"
+      class="absolute-top-right q-mt-lg q-mr-xs"
+    >
+      <q-list>
+        <q-item clickable v-close-popup @click="fetchRecetas()">
+          <q-item-section side>
+            <q-item-label>Todos</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup @click="favoritos()">
+          <q-item-section side>
+            <q-item-label>Favoritos</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup @click="originales()">
+          <q-item-section side>
+            <q-item-label>Originales</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup @click="proporciones()">
+          <q-item-section side>
+            <q-item-label>Proporciones</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-btn-dropdown>
     <div v-if="keys.length" class="row justify-center">
       <h4 class="text-bold text-purple q-ma-md">Mis recetas</h4>
-      <q-btn
-        v-if="keys.length > 1"
-        flat
-        round
-        color="primary"
-        icon="sort_by_alpha"
-        size="15px"
-        @click="ordenar"
-        class="absolute-top-right q-mt-lg q-mr-lg"
-      />
     </div>
     <q-separator v-if="keys.length" class="q-mt-xs"></q-separator>
     <q-list separator>
       <q-item v-for="receta in keys" :key="receta" class="q-pl-xs q-pr-xs">
+        <q-item-section side>
+          <q-checkbox
+            size="lg"
+            v-model="
+              keys[
+                keys.findIndex((r) => r.nombreReceta === receta.nombreReceta)
+              ].favorita
+            "
+            checked-icon="star"
+            unchecked-icon="star_border"
+            indeterminate-icon="help"
+            @click="favorita(receta.nombreReceta)"
+          />
+        </q-item-section>
         <q-item-section>
           <h6 class="text-bold text-purple q-ma-xs">
             · {{ receta.nombreReceta }}
-          </h6></q-item-section
-        >
+          </h6>
+        </q-item-section>
+
         <q-item-section avatar>
           <q-fab
             color="primary"
@@ -295,6 +341,8 @@ const fetchRecetas = async () => {
 
 const keys = ref(fetchRecetas());
 
+// ordenar debe dar prioridad a favoritas ademas de orden alfabetico, y cuando se ejecuta de nuevo debe invertir el orden
+
 const ordenar = () => {
   estaOrdenadoAlfabeticamente(keys.value)
     ? keys.value.reverse()
@@ -353,6 +401,42 @@ const eliminarReceta = (key) => {
       })
       .catch((error) => console.error("Error:", error));
   });
+};
+
+const favorita = async (receta) => {
+  let index = keys.value.findIndex((r) => r.nombreReceta === receta);
+  await fetch("http://localhost:3000/recetas/fav/?nombreReceta=" + receta, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      fetchRecetas();
+      $q.notify({
+        message: keys.value[index].favorita
+          ? "Receta añadida a favoritos"
+          : "Receta eliminada de favoritos",
+        type: "positive",
+      });
+    })
+    .catch((error) => console.error("Error:", error));
+};
+
+const favoritos = async () => {
+  await fetchRecetas();
+  keys.value = keys.value.filter((receta) => receta.favorita);
+};
+
+const originales = async () => {
+  await fetchRecetas();
+  keys.value = keys.value.filter((receta) => !receta.esProporcion);
+};
+
+const proporciones = async () => {
+  await fetchRecetas();
+  keys.value = keys.value.filter((receta) => receta.esProporcion);
 };
 
 // guardar receta editada (se cambio de localStorage a peticion a la API)
