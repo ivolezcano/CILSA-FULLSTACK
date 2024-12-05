@@ -5,7 +5,7 @@
         {{ proporcion.nombreReceta }}
       </div>
     </div>
-    <div>
+    <div class="q-ml-xl q-mr-xl">
       <TablaDeIngredientes
         :ingredientes="proporcion.ingredientes"
       ></TablaDeIngredientes>
@@ -41,7 +41,7 @@
 import { useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 import TablaDeIngredientes from "src/components/TablaDeIngredientes.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 const route = useRoute();
 const $q = useQuasar();
@@ -51,44 +51,79 @@ const ingrediente = route.query.ingrediente;
 const cantidad = route.query.cantidad;
 const seGuardo = ref(false);
 
-const recetaOriginal = JSON.parse($q.localStorage.getItem(key));
-const proporcion = ref(JSON.parse(JSON.stringify(recetaOriginal)));
+const recetaOriginal = ref({
+  nombreReceta: "",
+  ingredientes: [],
+  descripcion: "",
+});
+const proporcion = ref({ nombreReceta: "", ingredientes: [], descripcion: "" });
 
-const ingredienteOriginal = recetaOriginal.ingredientes.find(
-  (ingredient) => ingredient.ingrediente === ingrediente
-);
-
-for (let i = 0; i < proporcion.value.ingredientes.length; i++) {
-  proporcion.value.ingredientes[i].cantidad = parseFloat(
-    (
-      (cantidad * proporcion.value.ingredientes[i].cantidad) /
-      ingredienteOriginal.cantidad
-    ).toFixed(2)
-  );
-}
-
-proporcion.value.nombreReceta =
-  recetaOriginal.nombreReceta +
-  " en proporcion a " +
-  cantidad +
-  " " +
-  ingredienteOriginal.unidad +
-  " de " +
-  ingrediente;
-
-// guardar proporcion (cambiar de localStorage a petición a la API)
-const guardarProporcion = () => {
+// Cargar los datos de la receta
+const cargarReceta = async () => {
   try {
-    $q.localStorage.set(
-      (recetaOriginal.nombreReceta += " (prop.)"),
-      JSON.stringify(proporcion.value)
+    const response = await fetch(
+      `http://localhost:3000/recetas/?nombreReceta=${key}`
     );
+    const data = await response.json();
+    recetaOriginal.value = data;
+
+    // Calcular la proporción una vez que la receta está cargada
+    const ingredienteOriginal = recetaOriginal.value.ingredientes.find(
+      (ingredient) => ingredient.ingrediente === ingrediente
+    );
+
+    if (ingredienteOriginal) {
+      proporcion.value = {
+        ...recetaOriginal.value,
+        nombreReceta: `${recetaOriginal.value.nombreReceta} en proporcion a ${cantidad} ${ingredienteOriginal.unidad} de ${ingrediente}`,
+        ingredientes: recetaOriginal.value.ingredientes.map((item) => ({
+          ...item,
+          cantidad: parseFloat(
+            ((cantidad * item.cantidad) / ingredienteOriginal.cantidad).toFixed(
+              2
+            )
+          ),
+        })),
+      };
+    } else {
+      console.error("Ingrediente original no encontrado.");
+    }
+  } catch (error) {
+    console.error("Error al cargar la receta:", error);
+  }
+};
+
+onMounted(async () => {
+  await cargarReceta();
+});
+
+// Guardar proporción
+const guardarProporcion = async () => {
+  if (!proporcion.value) return;
+
+  try {
+    const response = await fetch(`http://localhost:3000/recetas`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nombreReceta: `${proporcion.value.nombreReceta}`,
+        ingredientes: proporcion.value.ingredientes,
+        descripcion: proporcion.value.descripcion,
+        original: key,
+        esProporcion: true,
+      }),
+    });
+    const data = await response.json();
+    console.log("Success:", data);
     seGuardo.value = true;
     $q.notify({
       type: "positive",
       message: "Proporcion guardada exitosamente",
     });
   } catch (error) {
+    console.error("Error al guardar la receta:", error);
     $q.notify({
       type: "negative",
       message: "Error al guardar la receta",

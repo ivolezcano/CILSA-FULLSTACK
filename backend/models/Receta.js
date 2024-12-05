@@ -18,9 +18,17 @@ const RecetaSchema = new mongoose.Schema({
   descripcion: {
     type: String,
   },
-  realizada: {
+  favorita: {
     type: Boolean,
     default: false,
+  },
+  esProporcion: {
+    type: Boolean,
+    default: false,
+  },
+  original: {
+    type: String,
+    default: "",
   },
 });
 export const Receta = mongoose.model("Receta", RecetaSchema);

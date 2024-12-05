@@ -134,30 +134,27 @@ const goToMisRecetas = () => {
   router.push("/misrecetas");
 };
 
-const crearReceta = () => {
+// chequea si ya existe la receta (Se cambio de localStorage a petición a la API)
+const existeLaReceta = async () => {
+  try {
+    const response = await fetch(
+      "http://localhost:3000/recetas/?nombreReceta=" + recetaName.value
+    );
+    const data = await response.json();
+    return data.nombreReceta === recetaName.value;
+  } catch (error) {
+    console.error("Error:", error);
+    return false;
+  }
+};
+
+const crearReceta = async () => {
   if (ingredientes.value.length < 1) {
     $q.notify({
       type: "warning",
       message: "La receta debe tener al menos un ingrediente",
     });
-  } else if (
-    // chequea si ya existe la receta (cambiar de localStorage a petición a la API)
-    $q.localStorage
-      .getAllKeys()
-      .map(function (elemento) {
-        return elemento.toUpperCase();
-      })
-      .includes(recetaName.value.toUpperCase())
-    /*
-      fetch("http://localhost:3000/recetas/?nombreReceta=" + recetaName.value)
-        .then((response) => response.json())
-        .then((data) => {
-          if(data.nombreReceta === recetaName.value){
-            return true;
-          }
-        })
-      */
-  ) {
+  } else if (await existeLaReceta()) {
     $q.notify({
       type: "negative",
       message: "Ya existe la receta " + recetaName.value.toString(),
@@ -169,20 +166,25 @@ const crearReceta = () => {
       descripcion: descripcion.value,
     };
     try {
-      // guardar receta (cambiar de localStorage a petición a la API)
-      $q.localStorage.set(recetaName.value, JSON.stringify(receta.value));
-      /*
+      // guardar receta (se cambio de localStorage a petición a la API)
       fetch("http://localhost:3000/recetas", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(receta.value),
-      });
-      */
-      descripcion.value = "";
-      recetaName.value = null;
-      ingredientes.value = [];
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+          descripcion.value = "";
+          recetaName.value = null;
+          ingredientes.value = [];
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+
       $q.notify({
         type: "positive",
         message: "Receta creada exitosamente",

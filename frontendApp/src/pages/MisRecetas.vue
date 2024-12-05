@@ -18,7 +18,7 @@
       <q-item v-for="receta in keys" :key="receta" class="q-pl-xs q-pr-xs">
         <q-item-section>
           <h6 class="text-bold text-purple q-ma-xs">
-            · {{ receta }}
+            · {{ receta.nombreReceta }}
           </h6></q-item-section
         >
         <q-item-section avatar>
@@ -32,15 +32,17 @@
             padding="sm"
           >
             <q-fab-action
-              v-if="!receta.includes('prop')"
+              v-if="!receta.esProporcion"
               push
               color="primary"
               round
               icon="calculate"
               dense
               @click.stop="
-                obtenerReceta(receta);
-                propor = true;
+                async () => {
+                  await obtenerReceta(receta.nombreReceta);
+                  propor = true;
+                }
               "
             />
             <q-fab-action
@@ -50,20 +52,24 @@
               icon="visibility"
               dense
               @click.stop="
-                obtenerReceta(receta);
-                mostrar = true;
+                async () => {
+                  await obtenerReceta(receta.nombreReceta);
+                  mostrar = true;
+                }
               "
             />
             <q-fab-action
-              v-if="!receta.includes('(prop.)')"
+              v-if="!receta.esProporcion"
               push
               color="primary"
               round
               icon="edit"
               dense
               @click.stop="
-                obtenerReceta(receta);
-                editar = true;
+                async () => {
+                  await obtenerReceta(receta.nombreReceta);
+                  editar = true;
+                }
               "
             />
             <q-fab-action
@@ -72,7 +78,7 @@
               round
               icon="delete"
               dense
-              @click.stop="eliminarReceta(receta)"
+              @click.stop="eliminarReceta(receta.nombreReceta)"
             />
           </q-fab>
         </q-item-section>
@@ -117,7 +123,7 @@
         </div>
         <q-card-section class="text-center">
           <q-btn
-            v-if="!$receta.nombreReceta.includes('proporcion')"
+            v-if="!$receta.esProporcion"
             label="Calcular proporcion"
             icon-right="calculate"
             text-color="purple"
@@ -234,7 +240,7 @@
             icon-right="save"
             color="primary"
             style="width: 100%"
-            @click="guardarEdit"
+            @click="guardarEdit()"
           />
         </q-card-section>
       </q-card>
@@ -277,18 +283,17 @@ const edit_descripcion = ref();
 const editar = ref(false);
 const edit_nombreReceta = ref();
 
-// obtener todas las recetas guardadas (Cambiar de localStorage a peticion a la API)
-const keys = ref($q.localStorage.getAllKeys());
-/*
-// const keys = ref(fetchRecetas());
+// obtener todas las recetas guardadas (se cambio de localStorage a peticion a la API)
 
 const fetchRecetas = async () => {
-  const response = await fetch("http://localhost:3000/recetas/nombres")
+  await fetch("http://localhost:3000/recetas/todas")
     .then((response) => response.json())
-    .then((data) => keys.value = data)
+    .then((data) => (keys.value = data))
     .catch((error) => console.error("Error:", error));
+  ordenar();
 };
-*/
+
+const keys = ref(fetchRecetas());
 
 const ordenar = () => {
   estaOrdenadoAlfabeticamente(keys.value)
@@ -305,68 +310,88 @@ const estaOrdenadoAlfabeticamente = (array) => {
   return true;
 };
 
-// obtener receta seleccionada para mostrarla (Cambiar de localStorage a peticion a la API)
-const obtenerReceta = (key) => {
-  $receta.value = JSON.parse($q.localStorage.getItem(key));
-  /*
-  $receta.value = fetch("http://localhost:3000/recetas/?nombreReceta=" + key)
+// obtener receta seleccionada para mostrarla (se cambio de localStorage a peticion a la API)
+const obtenerReceta = async (key) => {
+  await fetch("http://localhost:3000/recetas/?nombreReceta=" + key)
     .then((response) => response.json())
-    .then((data) => data)
+    .then((data) => {
+      $receta.value = data;
+      console.log($receta.value);
+      opciones.value = [];
+      for (let i = 0; i < $receta.value.ingredientes.length; i++) {
+        opciones.value.push($receta.value.ingredientes[i].ingrediente);
+      }
+      edit_descripcion.value = $receta.value.descripcion;
+      edit_nombreReceta.value = $receta.value.nombreReceta;
+    })
     .catch((error) => console.error("Error:", error));
-  */
-  opciones.value = [];
-  for (let i = 0; i < $receta.value.ingredientes.length; i++) {
-    opciones.value.push($receta.value.ingredientes[i].ingrediente);
-  }
-  edit_descripcion.value = $receta.value.descripcion;
-  edit_nombreReceta.value = $receta.value.nombreReceta;
 };
 
-// eliminar receta seleccionada (Cambiar de localStorage a peticion a la API)
+// eliminar receta seleccionada (se cambio de localStorage a peticion a la API)
 const eliminarReceta = (key) => {
   $q.dialog({
     title: "Eliminar receta",
     message: "¿Desea eliminar la receta '" + key + "'?",
     cancel: true,
     persistent: true,
-  }).onOk(() => {
-    $q.localStorage.remove(key);
-    // fetch("http://localhost:3000/recetas/?nombreReceta=" + key, {
-    //   method: "DELETE",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // }).then(() => {
-    let index = keys.value.indexOf(key);
-    if (index !== -1) {
-      keys.value.splice(index, 1);
-    }
-    $q.notify({
-      message: "Receta eliminada correctamente",
-      type: "positive",
-    });
-    // }).catch((error) => console.error("Error:", error));
+  }).onOk(async () => {
+    await fetch("http://localhost:3000/recetas/?nombreReceta=" + key, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(() => {
+        let index = keys.value.findIndex(
+          (receta) => receta.nombreReceta === key
+        );
+        keys.value.splice(index, 1);
+        $q.notify({
+          message: "Receta eliminada correctamente",
+          type: "positive",
+        });
+      })
+      .catch((error) => console.error("Error:", error));
   });
 };
 
-// guardar receta editada (Cambiar de localStorage a peticion a la API)
-const guardarEdit = () => {
+// guardar receta editada (se cambio de localStorage a peticion a la API)
+const guardarEdit = async () => {
   $q.dialog({
     title: "Guardar cambios",
     message: "¿Desea guardar la receta editada?",
     cancel: true,
     persistent: true,
-  }).onOk(() => {
+  }).onOk(async () => {
     let recetaEdit;
     recetaEdit = {
       nombreReceta: edit_nombreReceta.value,
       ingredientes: $receta.value.ingredientes,
       descripcion: edit_descripcion.value,
     };
-    $q.localStorage.remove($receta.value.nombreReceta);
-    $q.localStorage.set(edit_nombreReceta.value, JSON.stringify(recetaEdit));
+
+    await fetch(
+      "http://localhost:3000/recetas/?nombreReceta=" +
+        $receta.value.nombreReceta,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(recetaEdit),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
     editar.value = false;
-    keys.value = $q.localStorage.getAllKeys();
+    await fetchRecetas();
+
     $q.notify({
       message: "Receta editada correctamente",
       type: "positive",
