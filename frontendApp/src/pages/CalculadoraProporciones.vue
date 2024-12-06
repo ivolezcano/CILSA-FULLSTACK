@@ -62,7 +62,8 @@ const proporcion = ref({ nombreReceta: "", ingredientes: [], descripcion: "" });
 const cargarReceta = async () => {
   try {
     const response = await fetch(
-      `http://localhost:3000/recetas/?nombreReceta=${key}`
+      //`http://localhost:3000/recetas/?nombreReceta=${key}`
+      `https://calcuback.onrender.com/recetas/?nombreReceta=${key}`
     );
     const data = await response.json();
     recetaOriginal.value = data;
@@ -102,7 +103,8 @@ const guardarProporcion = async () => {
   if (!proporcion.value) return;
 
   try {
-    const response = await fetch(`http://localhost:3000/recetas`, {
+    //await fetch(`http://localhost:3000/recetas`, {
+    await fetch(`https://calcuback.onrender.com/recetas`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,14 +116,18 @@ const guardarProporcion = async () => {
         original: key,
         esProporcion: true,
       }),
-    });
-    const data = await response.json();
-    console.log("Success:", data);
-    seGuardo.value = true;
-    $q.notify({
-      type: "positive",
-      message: "Proporcion guardada exitosamente",
-    });
+    })
+      .then((response) => {
+        response.json();
+      })
+      .then((data) => {
+        console.log("Success:", data);
+        seGuardo.value = true;
+        $q.notify({
+          type: "positive",
+          message: "Proporcion guardada exitosamente",
+        });
+      });
   } catch (error) {
     console.error("Error al guardar la receta:", error);
     $q.notify({

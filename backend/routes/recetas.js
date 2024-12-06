@@ -59,9 +59,11 @@ router.delete("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const receta = new Receta(req.body);
+    console.log(receta);
     await receta.save();
     res.status(201).json(receta);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 });

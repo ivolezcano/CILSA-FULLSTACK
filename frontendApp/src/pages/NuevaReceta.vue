@@ -138,7 +138,8 @@ const goToMisRecetas = () => {
 const existeLaReceta = async () => {
   try {
     const response = await fetch(
-      "http://localhost:3000/recetas/?nombreReceta=" + recetaName.value
+      //"http://localhost:3000/recetas/?nombreReceta=" + recetaName.value
+      "https://calcuback.onrender.com/recetas/?nombreReceta=" + recetaName.value
     );
     const data = await response.json();
     return data.nombreReceta === recetaName.value;
@@ -167,7 +168,8 @@ const crearReceta = async () => {
     };
     try {
       // guardar receta (se cambio de localStorage a petición a la API)
-      fetch("http://localhost:3000/recetas", {
+      // fetch("http://localhost:3000/recetas", {
+      fetch("https://calcuback.onrender.com/recetas", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
