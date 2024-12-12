@@ -1,54 +1,82 @@
 <template>
   <q-page padding class="bg-secondary column">
+    <q-btn
+      v-if="keys.length > 1"
+      flat
+      round
+      color="primary"
+      icon="sort_by_alpha"
+      size="15px"
+      class="absolute-top-left q-mt-lg q-ml-md"
+      @click="ordenar()"
+    />
+    <q-btn-dropdown
+      flat
+      round
+      color="primary"
+      icon="filter_list"
+      size="15px"
+      class="absolute-top-right q-mt-lg q-mr-xs"
+    >
+      <q-list separator class="shadow-3">
+        <q-item
+          clickable
+          v-close-popup
+          @click="todas()"
+          class="bg-primary text-center"
+        >
+          <q-item-section>
+            <q-item-label class="text-blue-grey-1 text-subtitle1"
+              >Todas</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+        <q-item
+          clickable
+          v-close-popup
+          @click="favoritos()"
+          class="bg-primary text-center"
+        >
+          <q-item-section>
+            <q-item-label class="text-blue-grey-1 text-subtitle1"
+              >Favoritas</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+        <q-item
+          clickable
+          v-close-popup
+          @click="originales()"
+          class="bg-primary text-center"
+        >
+          <q-item-section>
+            <q-item-label class="text-blue-grey-1 text-subtitle1"
+              >Originales</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+        <q-item
+          clickable
+          v-close-popup
+          @click="proporciones()"
+          class="bg-primary text-center"
+        >
+          <q-item-section>
+            <q-item-label class="text-blue-grey-1 text-subtitle1"
+              >Proporciones</q-item-label
+            >
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-btn-dropdown>
+    <div class="row justify-center">
+      <h5 class="text-bold text-purple q-ma-md">{{ titulo }}</h5>
+    </div>
+    <q-separator v-if="keys.length" class="q-mt-xs"></q-separator>
     <div v-if="loading" class="absolute-center">
       <q-spinner color="primary" size="50px" />
     </div>
     <div v-else>
-      <q-btn
-        v-if="keys.length > 1"
-        flat
-        round
-        color="primary"
-        icon="sort_by_alpha"
-        size="15px"
-        class="absolute-top-left q-mt-lg q-ml-md"
-        @click="ordenar()"
-      />
-      <q-btn-dropdown
-        flat
-        round
-        color="primary"
-        icon="filter_list"
-        size="15px"
-        class="absolute-top-right q-mt-lg q-mr-xs"
-      >
-        <q-list>
-          <q-item clickable v-close-popup @click="fetchRecetas()">
-            <q-item-section side>
-              <q-item-label>Todos</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item clickable v-close-popup @click="favoritos()">
-            <q-item-section side>
-              <q-item-label>Favoritos</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item clickable v-close-popup @click="originales()">
-            <q-item-section side>
-              <q-item-label>Originales</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item clickable v-close-popup @click="proporciones()">
-            <q-item-section side>
-              <q-item-label>Proporciones</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-btn-dropdown>
-      <div v-if="keys.length" class="row justify-center">
-        <h4 class="text-bold text-purple q-ma-md">Mis recetas</h4>
-      </div>
-      <q-separator v-if="keys.length" class="q-mt-xs"></q-separator>
       <q-list separator>
         <q-item v-for="receta in keys" :key="receta" class="q-pl-xs q-pr-xs">
           <q-item-section side>
@@ -336,33 +364,40 @@ const edit_descripcion = ref();
 const editar = ref(false);
 const edit_nombreReceta = ref();
 const loading = ref(false);
+const titulo = ref("Todas las recetas");
 
 // obtener todas las recetas guardadas (se cambio de localStorage a peticion a la API)
 
 const fetchRecetas = async () => {
-  loading.value = true; // Mostrar el spinner
   //await fetch("http://localhost:3000/recetas/todas")
   await fetch("https://calcuback.onrender.com/recetas/todas")
     .then((response) => response.json())
     .then((data) => (keys.value = data))
-    .catch((error) => console.error("Error:", error))
-    .finally(() => (loading.value = false)); // Ocultar el spinner
-  ordenar();
+    .catch((error) => console.error("Error:", error));
+  // ordenar();
 };
 
 const keys = ref(fetchRecetas());
 
-// ordenar debe dar prioridad a favoritas ademas de orden alfabetico, y cuando se ejecuta de nuevo debe invertir el orden
+// ordenar por orden alfabetico, y cuando se ejecuta de nuevo debe invertir el orden
 
 const ordenar = () => {
   estaOrdenadoAlfabeticamente(keys.value)
     ? keys.value.reverse()
-    : keys.value.sort();
+    : keys.value.sort((a, b) => {
+        if (a.nombreReceta < b.nombreReceta) {
+          return -1;
+        }
+        if (a.nombreReceta > b.nombreReceta) {
+          return 1;
+        }
+        return 0;
+      });
 };
 
 const estaOrdenadoAlfabeticamente = (array) => {
   for (let i = 0; i < array.length - 1; i++) {
-    if (array[i] > array[i + 1]) {
+    if (array[i].nombreReceta > array[i + 1].nombreReceta) {
       return false;
     }
   }
@@ -441,18 +476,26 @@ const favorita = async (receta) => {
     .catch((error) => console.error("Error:", error));
 };
 
+const todas = async () => {
+  await fetchRecetas();
+  titulo.value = "Todas las recetas";
+};
+
 const favoritos = async () => {
   await fetchRecetas();
+  titulo.value = "Recetas favoritas";
   keys.value = keys.value.filter((receta) => receta.favorita);
 };
 
 const originales = async () => {
   await fetchRecetas();
+  titulo.value = "Recetas originales";
   keys.value = keys.value.filter((receta) => !receta.esProporcion);
 };
 
 const proporciones = async () => {
   await fetchRecetas();
+  titulo.value = "Recetas en proporción";
   keys.value = keys.value.filter((receta) => receta.esProporcion);
 };
 
@@ -502,7 +545,10 @@ const guardarEdit = async () => {
 };
 
 onMounted(async () => {
-  await fetchRecetas();
+  loading.value = true;
+  await fetchRecetas().then(() => {
+    loading.value = false;
+  });
 });
 </script>
 
